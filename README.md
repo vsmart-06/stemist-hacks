@@ -24,4 +24,5 @@
 
 #### Technologies:
 - Flutter
-- SQLite
+- Python
+- MongoDB
