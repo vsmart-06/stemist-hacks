@@ -21,3 +21,7 @@
 - [ ] Merge maps choosing along with location input
 
 - [ ] When you are in a place, allow users to create their own checklist with different places to visit and check them off when required
+
+#### Technologies:
+- Flutter
+- SQLite
