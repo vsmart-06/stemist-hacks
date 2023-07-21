@@ -1,4 +1,4 @@
-# Trippie
+# Tourio
 
 ### This is our submission for STEMist Hacks 2
 
