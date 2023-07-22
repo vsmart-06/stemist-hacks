@@ -3,7 +3,7 @@ import "package:geolocator/geolocator.dart";
 import "package:http/http.dart";
 import "dart:convert";
 
-String base = "http://127.0.0.1:5000";
+String base = "https://tourio-api.onrender.com";
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -17,12 +17,15 @@ class _HomeState extends State<Home> {
   Position? position;
   List<Widget> landmarks= [];
 
-  Future<Position> getPosition() async {
-    Position position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
-    return position;
+  void getPosition() async {
+    Position posit = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.best);
+    print(posit);
+    setState(() {
+      position = posit;
+    });
   }
 
-  void generateLandmarks () async {
+  /* void generateLandmarks () async {
     landmarks = [];
 
     Response response = await get(Uri.parse(base + "/landmarks"));
@@ -35,7 +38,7 @@ class _HomeState extends State<Home> {
         )
       );
     }
-  }
+  } */
 
   @override
   Widget build(BuildContext context) {
@@ -49,10 +52,8 @@ class _HomeState extends State<Home> {
           children: [
             TextButton(
               child: Text("Get landmarks"),
-              onPressed: () {
-                setState(() async {
-                  position = await getPosition();
-                });
+              onPressed: () async {
+                getPosition();
               },
             ),
             Column(
