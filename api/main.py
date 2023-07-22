@@ -7,6 +7,7 @@ dotenv.load_dotenv()
 
 app = Flask(__name__)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
+OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 @app.route("/")
 def index():
