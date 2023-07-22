@@ -36,5 +36,3 @@ def details():
     )
     decoded_response = response.response['choices'][0]['message']['content']
     return {"details": decoded_response}
-
-app.run(debug = True)
