@@ -3,7 +3,7 @@ import "package:geolocator/geolocator.dart";
 import "package:http/http.dart";
 import "dart:convert";
 
-String base_url = "http://10.0.2.2:5000";
+String base_url = "https://tourio-api.onrender.com/";
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -22,6 +22,7 @@ class _HomeState extends State<Home> {
   late double width;
   late double height;
   String location = "";
+  ScrollController controller = ScrollController();
 
   void getAutocomplete(String place) async {
     Response response = await get(Uri.parse(base_url + "/autocomplete"),
@@ -29,21 +30,79 @@ class _HomeState extends State<Home> {
     var temp_autocomplete = jsonDecode(response.body)["autocomplete"];
     setState(() {
       autocomplete = temp_autocomplete;
+      landmarks = [];
+      landmark_names = [];
+      pressed = [];
     });
   }
 
-  Column autocompleteColumn() {
-    return Column(
-      children: autocomplete.map<TextButton>((var name) {
-        return TextButton(
-          onPressed: () {
-            setState(() {
-              generateLandmarks(name);
-            });
-          },
-          child: Text(name),
-        );
-      }).toList(),
+  Widget autocompleteColumn() {
+    return Container(
+      height: autocomplete.isEmpty ? null : height * 0.2,
+      child: RawScrollbar(
+        controller: controller,
+        isAlwaysShown: true,
+        thumbColor: Colors.black,
+        child: SingleChildScrollView(
+          controller: controller,
+          child: Column(
+            children: [
+              Container(
+                width: width * 0.9,
+                child: Padding(
+                  padding: const EdgeInsets.all(5.0),
+                  child: Card(
+                    color: Colors.lightBlue,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(20),
+                        side: BorderSide(color: Colors.lightBlue)),
+                    child: TextButton.icon(
+                      onPressed: () {
+                        getPosition();
+                      },
+                      style: ButtonStyle(
+                        foregroundColor: MaterialStateProperty.all<Color>(Colors.white)
+                      ),
+                      label: Text(
+                        "Current Location",
+                        style: TextStyle(
+                            fontWeight: FontWeight.bold),
+                      ),
+                      icon: Icon(Icons.location_on)
+                    ),
+                  ),
+                ),
+              ),
+              Column(
+                children: autocomplete.map<Container>((var name) {
+                  return Container(
+                    width: width * 0.9,
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                          side: BorderSide(color: Colors.lightBlue)),
+                      child: TextButton(
+                        onPressed: () {
+                          setState(() {
+                            generateLandmarks(name);
+                          });
+                        },
+                        child: Padding(
+                          padding: const EdgeInsets.all(10.0),
+                          child: Text(
+                            name,
+                            textAlign: TextAlign.center,
+                          ),
+                        ),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
@@ -137,8 +196,6 @@ class _HomeState extends State<Home> {
           headers: {"place": place});
     }
     var landmark_data = jsonDecode(response.body)["landmarks"];
-    print(
-        "-------------------------------------\n$landmark_data\n-------------------------------------");
     for (Map landmark in landmark_data) {
       temp_pressed.add(false);
       int index = landmark_data.indexOf(landmark);
