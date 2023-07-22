@@ -1,19 +1,28 @@
 import 'dart:async';
-
+import "package:geolocator/geolocator.dart";
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-void main() => runApp(MyApp());
-
-class MyApp extends StatefulWidget {
+class MapPage extends StatefulWidget {
   @override
-  _MyAppState createState() => _MyAppState();
+  _MapPageState createState() => _MapPageState();
 }
 
-class _MyAppState extends State<MyApp> {
+class _MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
+  LatLng? _center;
 
-  static const LatLng _center = const LatLng(45.521563, -122.677433);
+  void getPosition() async {
+    var permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+    Position posit = await Geolocator.getCurrentPosition(
+        desiredAccuracy: LocationAccuracy.best);
+    setState(() {
+      _center = LatLng(posit.latitude, posit.longitude);
+    });
+  }
 
   void _onMapCreated(GoogleMapController controller) {
     _controller.complete(controller);
@@ -21,18 +30,15 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Maps Sample App'),
-          backgroundColor: Colors.green[700],
-        ),
-        body: GoogleMap(
-          onMapCreated: _onMapCreated,
-          initialCameraPosition: CameraPosition(
-            target: _center,
-            zoom: 11.0,
-          ),
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Maps Sample App'),
+      ),
+      body: GoogleMap(
+        onMapCreated: _onMapCreated,
+        initialCameraPosition: CameraPosition(
+          target: _center!,
+          zoom: 11.0,
         ),
       ),
     );
