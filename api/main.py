@@ -15,8 +15,14 @@ def index():
 def landmarks():
     data = request.headers
 
-    latitude = data.get("latitude")
-    longitude = data.get("longitude")
+    try:
+        latitude = data.get("latitude")
+        longitude = data.get("longitude")
+    except:
+        place = data.get("place")
+        location = requests.get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json", params = {"input": place}).json()["candidates"][0]["geometry"]["location"]
+        latitude = location["lat"]
+        longitude = location["lng"]
 
     landmarks = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params = {"location": f"{latitude},{longitude}", "radius": 5000, "rankby": "prominence", "type": "tourist_attraction", "key": GOOGLE_API_KEY}).json()["results"]
 
