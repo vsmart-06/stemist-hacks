@@ -34,5 +34,5 @@ def details():
         {"role": "user", "content": f"Provide information on {landmark} as if you are a tour guide speaking to a tourist. You don't have to introduce yourself."}
         ]
     )
-    decoded_response = response.response['choices'][0]['message']['content']
+    decoded_response = response['choices'][0]['message']['content']
     return {"details": decoded_response}
