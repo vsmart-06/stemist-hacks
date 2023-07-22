@@ -20,11 +20,13 @@ def landmarks():
 
     landmarks = requests.get("https://maps.googleapis.com/maps/api/place/nearbysearch/json", params = {"location": f"{latitude},{longitude}", "radius": 5000, "rankby": "prominence", "type": "tourist_attraction", "key": GOOGLE_API_KEY}).json()["results"]
 
+    landmarks = [{"name": landmark["name"], "vicinity": landmark["vicinity"]} for landmark in landmarks]
+
     return {"landmarks": landmarks}
 
 openai.api_key = OPENAI_API_KEY
 
-@app.route("/details")
+@app.route("/details", methods = ["GET"])
 def details():
     data = request.headers
     landmark = data.get('landmark')
@@ -36,3 +38,14 @@ def details():
     )
     decoded_response = response['choices'][0]['message']['content']
     return {"details": decoded_response}
+
+@app.route("/autocomplete", methods = ["GET"])
+def autocomplete():
+    data = request.headers
+    place = data.get("place")
+
+    options = requests.get("https://maps.googleapis.com/maps/api/place/autocomplete/json", params = {"input": place, "key": GOOGLE_API_KEY}).json()["predictions"]
+
+    options = [option["description"] for option in options]
+
+    return {"autocomplete": options}
