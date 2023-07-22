@@ -34,11 +34,24 @@ class _MapPageState extends State<MapPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) => getPosition());
   }
 
+  _handleTap(LatLng tappedPoint) {
+    setState(() {
+      markers = {
+        Marker(
+          markerId: MarkerId(tappedPoint.toString()),
+          position: tappedPoint,
+          draggable: true,
+        )
+      };
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: Text('Map'),
+        centerTitle: true,
       ),
       body: GoogleMap(
         markers: markers,
@@ -50,17 +63,5 @@ class _MapPageState extends State<MapPage> {
         onTap: _handleTap,
       ),
     );
-  }
-
-  _handleTap(LatLng tappedPoint) {
-    setState(() {
-      markers = {
-        Marker(
-          markerId: MarkerId(tappedPoint.toString()),
-          position: tappedPoint,
-          draggable: true,
-        )
-      };
-    });
   }
 }
