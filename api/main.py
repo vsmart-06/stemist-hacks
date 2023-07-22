@@ -1,10 +1,7 @@
 from flask import Flask, request
 import requests
 import os
-import dotenv
 import openai
-
-dotenv.load_dotenv()
 
 app = Flask(__name__)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
