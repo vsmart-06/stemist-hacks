@@ -2,9 +2,6 @@ from flask import Flask, request
 import requests
 import os
 import openai
-import dotenv
-
-dotenv.load_dotenv()
 
 app = Flask(__name__)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
@@ -39,5 +36,3 @@ def details():
     )
     decoded_response = response['choices'][0]['message']['content']
     return {"details": decoded_response}
-
-app.run(debug = True)
