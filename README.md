@@ -14,6 +14,8 @@
 
 - [ ] Mark the most popular landmarks to give users an idea of where to visit
 
+- [ ] Tell what the city is famous for as well
+
 - [ ] Use ChatGPT to generate a bunch of details about the location and use a voice converter to return the output
 
 - [ ] Provide an option to allow users to explore other places even if they are not at the location

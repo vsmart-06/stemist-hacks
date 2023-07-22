@@ -11,6 +11,7 @@ class MapPage extends StatefulWidget {
 class _MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
   LatLng? _center;
+  Set<Marker> markers = {};
 
   void getPosition() async {
     var permission = await Geolocator.checkPermission();
@@ -28,19 +29,38 @@ class _MapPageState extends State<MapPage> {
     _controller.complete(controller);
   }
 
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) => getPosition());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Maps Sample App'),
+        title: Text('Map'),
       ),
       body: GoogleMap(
+        markers: markers,
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
           target: _center!,
           zoom: 11.0,
         ),
+        onTap: _handleTap,
       ),
     );
+  }
+
+  _handleTap(LatLng tappedPoint) {
+    setState(() {
+      markers = {
+        Marker(
+          markerId: MarkerId(tappedPoint.toString()),
+          position: tappedPoint,
+          draggable: true,
+        )
+      };
+    });
   }
 }

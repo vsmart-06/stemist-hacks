@@ -17,9 +17,35 @@ class _HomeState extends State<Home> {
   List<Widget> landmarks = [];
   List<String> landmark_names = [];
   List<bool> pressed = [];
+  List<dynamic> autocomplete = [];
   String floating_data = "";
   late double width;
   late double height;
+  String location = "";
+
+  void getAutocomplete(String place) async {
+    Response response = await get(Uri.parse(base_url + "/autocomplete"),
+        headers: {"place": place});
+    var temp_autocomplete = jsonDecode(response.body)["autocomplete"];
+    setState(() {
+      autocomplete = temp_autocomplete;
+    });
+  }
+
+  Column autocompleteColumn() {
+    return Column(
+      children: autocomplete.map<TextButton>((var name) {
+        return TextButton(
+          onPressed: () {
+            setState(() {
+              generateLandmarks(name);
+            });
+          },
+          child: Text(name),
+        );
+      }).toList(),
+    );
+  }
 
   void getPosition() async {
     var permission = await Geolocator.checkPermission();
@@ -30,7 +56,7 @@ class _HomeState extends State<Home> {
         desiredAccuracy: LocationAccuracy.best);
     setState(() {
       position = posit;
-      generateLandmarks();
+      generateLandmarks(null);
     });
   }
 
@@ -96,29 +122,36 @@ class _HomeState extends State<Home> {
     return Container();
   }
 
-  void generateLandmarks() async {
+  void generateLandmarks(String? place) async {
     List<Widget> temp_landmarks = [];
     List<String> temp_string_landmarks = [];
     List<bool> temp_pressed = [];
-
-    Response response = await get(Uri.parse(base_url + "/landmarks"), headers: {
-      "latitude": position!.latitude.toString(),
-      "longitude": position!.longitude.toString()
-    });
+    late Response response;
+    if (place == null) {
+      response = await get(Uri.parse(base_url + "/landmarks"), headers: {
+        "latitude": position!.latitude.toString(),
+        "longitude": position!.longitude.toString()
+      });
+    } else {
+      response = await get(Uri.parse(base_url + "/landmarks"),
+          headers: {"place": place});
+    }
     var landmark_data = jsonDecode(response.body)["landmarks"];
-
+    print(
+        "-------------------------------------\n$landmark_data\n-------------------------------------");
     for (Map landmark in landmark_data) {
       temp_pressed.add(false);
       int index = landmark_data.indexOf(landmark);
       temp_string_landmarks.add(landmark["name"]);
-      Card card = Card(
-          elevation: 20,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(20)
-          ),
-          child: Padding(
-        padding: const EdgeInsets.all(5.0),
-        child: TextButton(
+      Container card = Container(
+        width: width * 0.8,
+        height: height * 0.12,
+        child: ElevatedButton(
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                  RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(20))),
+              elevation: MaterialStateProperty.all<double>(20)),
           onPressed: () async {
             String details = await getInformation(landmark["name"]);
             setState(() {
@@ -126,11 +159,26 @@ class _HomeState extends State<Home> {
               floating_data = details;
             });
           },
-          child: Column(
-            children: [Text(landmark["name"]), Text(landmark["vicinity"])],
+          child: Padding(
+            padding: const EdgeInsets.all(5.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [
+                Text(
+                  landmark["name"],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  landmark["vicinity"],
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                )
+              ],
+            ),
           ),
         ),
-      ));
+      );
       temp_landmarks.add(Padding(
         padding: const EdgeInsets.all(10.0),
         child: card,
@@ -159,17 +207,41 @@ class _HomeState extends State<Home> {
           children: [
             Column(
               children: [
-                TextButton.icon(
-                  label: Text("Get landmarks"),
-                  icon: Icon(Icons.search),
-                  onPressed: () async {
-                    getPosition();
-                  },
+                Padding(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(children: [
+                    Expanded(
+                      child: TextField(
+                        decoration: InputDecoration(
+                          border: OutlineInputBorder(),
+                          hintText: "Location",
+                        ),
+                        onChanged: (value) {
+                          setState(() {
+                            location = value;
+                          });
+                        },
+                      ),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(10, 0, 0, 0),
+                      child: IconButton(
+                        icon: Icon(Icons.search),
+                        onPressed: () async {
+                          location.isEmpty ? null : getAutocomplete(location);
+                        },
+                      ),
+                    ),
+                  ]),
                 ),
+                autocompleteColumn(),
                 Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: landmarks,
+                  child: Container(
+                    width: width,
+                    child: SingleChildScrollView(
+                      child: Column(
+                        children: landmarks,
+                      ),
                     ),
                   ),
                 )
