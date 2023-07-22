@@ -9,7 +9,7 @@ OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 
 @app.route("/")
 def index():
-    return '<marquee direction="right"><h1>The oral-cancer-ml API is up and running!</h1></marquee>'
+    return '<marquee direction="right"><h1>The tourio API is up and running!</h1></marquee>'
 
 @app.route("/landmarks", methods = ["GET"])
 def landmarks():
