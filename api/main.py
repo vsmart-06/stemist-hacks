@@ -55,3 +55,27 @@ def autocomplete():
     options = [option["description"] for option in options]
 
     return {"autocomplete": options}
+
+@app.route("/city-details", methods = ["GET"])
+def city_details():
+    data = request.headers
+
+    latitude = data.get("latitude")
+    longitude = data.get("longitude")
+
+    response = requests.get("https://maps.googleapis.com/maps/api/geocode/json", params = {"latlng": f"{latitude},{longitude}", "result_type": "locality", "key": GOOGLE_API_KEY}).json()["results"][0]["address_components"][0]
+
+    for x in response:
+        if "locality" in x["types"]:
+            city = x["long_name"]
+            break
+
+    gpt_response = openai.ChatCompletion.create(
+    model = "gpt-3.5-turbo",
+    messages = [
+        {"role": "user", "content": f"Provide information on {city} as if you are a tour guide speaking to a tourist. You don't have to introduce yourself."}
+        ]
+    )
+    decoded_response = gpt_response['choices'][0]['message']['content']
+    
+    return {"city": city, "details": decoded_response}
