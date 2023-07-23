@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import "package:http/http.dart";
 import "dart:convert";
+import 'package:device_information/device_information.dart';
 
-String base_url = "http://127.0.0.1:5000";
+String base_url = "http://10.0.2.2:5000";
 
 class Checklist extends StatefulWidget {
   @override
@@ -12,15 +13,7 @@ class Checklist extends StatefulWidget {
 class _ChecklistState extends State<Checklist> {
   List<String> items = [];
   List<bool> pressed = [];
-
-  void addItem(String item) async {
-    setState(() {
-      items.add(item);
-      pressed.add(false);
-    });
-    await post(Uri.parse(base_url + "/add-task"),
-        body: {"user": "vishnu", "task": "['$item', False]"});
-  }
+  String device_id = "";
 
   void deleteItem(int index) async {
     String item = items.removeAt(index);
@@ -32,14 +25,14 @@ class _ChecklistState extends State<Checklist> {
       pressed = pressed;
     });
     await delete(Uri.parse(base_url + "/delete-task"),
-        headers: {"user": "vishnu", "task": "['$item', $caps_press]"});
+        headers: {"user": device_id, "task": "['$item', $caps_press]"});
   }
 
   void loadItems() async {
     items = [];
     pressed = [];
     var t = await get(Uri.parse(base_url + "/get-tasks"),
-        headers: {"user": "vishnu"});
+        headers: {"user": device_id});
     var data = jsonDecode(t.body)["tasks"];
     if (data == null) {
       return;
@@ -54,11 +47,19 @@ class _ChecklistState extends State<Checklist> {
     });
   }
 
+  void getDeviceId() async {
+    var deviceId = await DeviceInformation.deviceIMEINumber;
+    setState(() {
+      device_id = deviceId;
+    });
+    loadItems();
+  }
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    loadItems();
+    getDeviceId();
   }
 
   @override
@@ -119,9 +120,10 @@ class _ChecklistState extends State<Checklist> {
                   setState(() {
                     pressed[index] = new_value!;
                   });
-                  String caps_pressed = "${new_value.toString()[0].toUpperCase()}${new_value.toString().substring(1).toLowerCase()}";
+                  String caps_pressed =
+                      "${new_value.toString()[0].toUpperCase()}${new_value.toString().substring(1).toLowerCase()}";
                   await patch(Uri.parse(base_url + "/update-task"), headers: {
-                    "user": "vishnu",
+                    "user": device_id,
                     "task": "['${items[index]}', $caps_pressed]",
                     "pressed": caps_pressed
                   });
@@ -132,10 +134,6 @@ class _ChecklistState extends State<Checklist> {
             ),
           );
         },
-      ),
-      floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () => addItem('New Item'),
       ),
     );
   }

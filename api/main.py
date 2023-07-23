@@ -23,7 +23,10 @@ class LandmarkChecklist:
     def add_task(self, username: str, task: list):
         try:
             tasks: list = self.table.find_one({"user": username})["tasks"]
-            tasks.append(task)
+            if tasks:
+                tasks.append(task)
+            else:
+                tasks = [task]
             self.table.update_one({"user": username}, {"$set": {"tasks": tasks}})
         except:
             tasks = [task]
@@ -50,7 +53,7 @@ class LandmarkChecklist:
     
     def delete_task(self, username: str, task: list):
         tasks: list = self.table.find_one({"user": username})["tasks"]
-        tasks = tasks.remove(task)
+        tasks.remove(task)
         self.table.update_one({"user": username}, {"$set": {"tasks": tasks}})
 
         return True
@@ -68,7 +71,6 @@ def landmarks():
     if not (latitude and longitude):
         place = data.get("place")
         location = requests.get("https://maps.googleapis.com/maps/api/place/findplacefromtext/json", params = {"input": place, "inputtype": "textquery", "fields": "geometry", "key": GOOGLE_API_KEY}).json()["candidates"][0]["geometry"]["location"]
-        print(location)
         latitude = location["lat"]
         longitude = location["lng"]
 
@@ -173,7 +175,6 @@ def delete_task():
 
     username = data.get("user")
     task = eval(data.get("task"))
-    print(task)
     mongo = LandmarkChecklist(MONGO_LINK)
 
     mongo.delete_task(username, task)

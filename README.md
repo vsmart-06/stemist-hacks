@@ -27,8 +27,6 @@
 #### To-Do:
 - [x] Loading animation
 
-- [ ] Distance from landmark
-
 - [x] Add city details on the homepage
 
 #### Technologies:

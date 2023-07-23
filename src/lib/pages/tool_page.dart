@@ -2,10 +2,10 @@ import "package:flutter/material.dart";
 import "package:geolocator/geolocator.dart";
 import "package:http/http.dart";
 import "dart:convert";
-
+import 'package:device_information/device_information.dart';
 import "package:loading_animation_widget/loading_animation_widget.dart";
 
-String base_url = "http://127.0.0.1:5000";
+String base_url = "http://10.0.2.2:5000";
 class Tool extends StatefulWidget {
   const Tool({super.key});
 
@@ -208,47 +208,58 @@ class _ToolState extends State<Tool> {
       temp_pressed.add(false);
       int index = landmark_data.indexOf(landmark);
       temp_string_landmarks.add(landmark["name"]);
-      Container card = Container(
-        width: width * 0.8,
-        height: height * 0.12,
-        child: ElevatedButton(
-          style: ButtonStyle(
-              shape: MaterialStateProperty.all<RoundedRectangleBorder>(
-                  RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(20))),
-              elevation: MaterialStateProperty.all<double>(20)),
-          onPressed: () async {
-            setState(() {
-                          pressed[index] = true;
-            });
-            String details = await getInformation(landmark["name"]);
-            setState(() {
-              floating_data = details;
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(5.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Text(
-                  landmark["name"],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontWeight: FontWeight.bold),
+      Row row = Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Container(
+            width: width * 0.8,
+            height: height * 0.12,
+            child: ElevatedButton(
+              style: ButtonStyle(
+                  shape: MaterialStateProperty.all<RoundedRectangleBorder>(
+                      RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20))),
+                  elevation: MaterialStateProperty.all<double>(20)),
+              onPressed: () async {
+                setState(() {
+                  pressed[index] = true;
+                });
+                String details = await getInformation(landmark["name"]);
+                setState(() {
+                  floating_data = details;
+                });
+              },
+              child: Padding(
+                padding: const EdgeInsets.all(5.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    Text(
+                      landmark["name"],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                    Text(
+                      landmark["vicinity"],
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontStyle: FontStyle.italic),
+                    )
+                  ],
                 ),
-                Text(
-                  landmark["vicinity"],
-                  textAlign: TextAlign.center,
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                )
-              ],
+              ),
             ),
           ),
-        ),
+          IconButton(onPressed: () async {
+            var deviceId = await DeviceInformation.deviceIMEINumber;
+            String name = landmark["name"];
+            await post(Uri.parse(base_url + "/add-task"),
+              body: {"user": deviceId, "task": "['$name', False]"});
+          }, icon: Icon(Icons.playlist_add_check))
+        ],
       );
       temp_landmarks.add(Padding(
         padding: const EdgeInsets.all(10.0),
-        child: card,
+        child: row,
       ));
     }
     setState(() {

@@ -3,10 +3,11 @@ import "package:http/http.dart";
 import "package:geolocator/geolocator.dart";
 import "dart:convert";
 import 'package:loading_animation_widget/loading_animation_widget.dart';
+import "package:permission_handler/permission_handler.dart";
 
-String base_url = "http://127.0.0.1:5000";
+String base_url = "http://10.0.2.2:5000";
 
-class Home extends StatefulWidget { 
+class Home extends StatefulWidget {
   const Home({super.key});
 
   @override
@@ -14,7 +15,6 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-
   String city = "";
   String details = "";
 
@@ -25,9 +25,9 @@ class _HomeState extends State<Home> {
     }
     Position position = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
+    await Permission.phone.request();
 
     generateDetails(position);
-
   }
 
   void generateDetails(Position position) async {
@@ -53,8 +53,7 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(title: Text("Tourio"),
-        centerTitle: true),
+        appBar: AppBar(title: Text("Tourio"), centerTitle: true),
         drawer: Drawer(
           child: ListView(
             padding: EdgeInsets.zero,
@@ -96,8 +95,7 @@ class _HomeState extends State<Home> {
             child: Padding(
           padding: const EdgeInsets.fromLTRB(20, 0, 20, 0),
           child: SingleChildScrollView(
-            child: Column(
-              children: [
+            child: Column(children: [
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: city == ""
@@ -105,11 +103,9 @@ class _HomeState extends State<Home> {
                         color: Colors.blue, size: 200)
                     : Text("Welcome to $city!"),
               ),
-              details == ""? Text("Generating..."):Text(details)
-            ]
-            ),
+              details == "" ? Text("Generating...") : Text(details)
+            ]),
           ),
-        )
-      ));
+        )));
   }
 }
