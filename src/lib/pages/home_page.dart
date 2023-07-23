@@ -62,7 +62,7 @@ class _HomeState extends State<Home> {
                 height: 80,
                 child: DrawerHeader(
                     child:
-                        Text("Tourio", style: TextStyle(color: Colors.black))),
+                        Text("Tourio", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
               ),
               ListTile(
                 title: Text(
@@ -99,7 +99,7 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: city == ""
-                    ? LoadingAnimationWidget.threeArchedCircle(
+                    ? LoadingAnimationWidget.newtonCradle(
                         color: Colors.blue, size: 200)
                     : Text("Welcome to $city!"),
               ),

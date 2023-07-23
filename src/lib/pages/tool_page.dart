@@ -158,8 +158,11 @@ class _ToolState extends State<Tool> {
                   child: floating_data.isEmpty ? Center(child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      LoadingAnimationWidget.newtonCradle(color: Colors.blue, size: 200),
-                      Text("Generating...")
+                      LoadingAnimationWidget.inkDrop(color: Colors.blue, size: 100),
+                      Padding(
+                        padding: const EdgeInsets.all(30.0),
+                        child: Text("Generating..."),
+                      )
                     ],
                   )) : SingleChildScrollView(
                     child: Padding(
@@ -298,7 +301,8 @@ class _ToolState extends State<Tool> {
                 child: Text(
                   "Tourio",
                   style: TextStyle(
-                    color: Colors.black
+                    color: Colors.black, 
+                    fontWeight: FontWeight.bold
                   )
                 )
               ),

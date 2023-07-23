@@ -41,6 +41,7 @@ dependencies:
   loading_animation_widget: ^1.2.0
   device_information: ^0.0.4
   permission_handler: ^10.4.3
+  google_fonts: ^5.1.0
 
 dev_dependencies:
   flutter_test:

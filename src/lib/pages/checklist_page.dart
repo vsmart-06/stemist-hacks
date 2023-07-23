@@ -76,7 +76,7 @@ class _ChecklistState extends State<Checklist> {
             Container(
               height: 80,
               child: DrawerHeader(
-                  child: Text("Tourio", style: TextStyle(color: Colors.black))),
+                  child: Text("Tourio", style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold))),
             ),
             ListTile(
               title: Text(
