@@ -181,4 +181,5 @@ def delete_task():
 
     return {"message": "Task deleted successfully"}
 
-app.run(debug=True)
+if __name__ == "__main__":
+    app.run(debug=True)

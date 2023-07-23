@@ -1,6 +1,6 @@
 Flask
 requests
-gunicorn
 openai
 pymongo
 certifi
+python-dotenv
