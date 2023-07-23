@@ -73,3 +73,4 @@ flask run
 cd src
 flutter run --dart-define GOOGLE_API_KEY=<your google api key>
 ```
+**Note:** Choose the android emulator from the options that appear when the `flutter run` command is executed 
