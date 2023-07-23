@@ -1,6 +1,6 @@
 # Tourio
 
-### This is our submission for STEMist Hacks 2.0
+## This is our submission for STEMist Hacks 2.0
 
 ### Team members:
 
