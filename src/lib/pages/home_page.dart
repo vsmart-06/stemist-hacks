@@ -99,7 +99,7 @@ class _HomeState extends State<Home> {
               Padding(
                 padding: const EdgeInsets.all(10.0),
                 child: city == ""
-                    ? LoadingAnimationWidget.newtonCradle(
+                    ? LoadingAnimationWidget.staggeredDotsWave(
                         color: Colors.blue, size: 200)
                     : Text("Welcome to $city!"),
               ),

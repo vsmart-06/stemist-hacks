@@ -2,6 +2,7 @@ import 'dart:async';
 import "package:geolocator/geolocator.dart";
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class MapPage extends StatefulWidget {
   @override
@@ -50,10 +51,10 @@ class _MapPageState extends State<MapPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Map'),
+        title: Text('Tourio'),
         centerTitle: true,
       ),
-      body: GoogleMap(
+      body: center == null ? Center(child: LoadingAnimationWidget.newtonCradle(color: Colors.blue, size: 200)) : GoogleMap(
         markers: markers,
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(

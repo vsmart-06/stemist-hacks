@@ -66,7 +66,7 @@ class _ChecklistState extends State<Checklist> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Checklist'),
+        title: Text('Tourio'),
         centerTitle: true,
       ),
       drawer: Drawer(
