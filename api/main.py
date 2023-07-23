@@ -63,7 +63,7 @@ def city_details():
     latitude = data.get("latitude")
     longitude = data.get("longitude")
 
-    response = requests.get("https://maps.googleapis.com/maps/api/geocode/json", params = {"latlng": f"{latitude},{longitude}", "result_type": "locality", "key": GOOGLE_API_KEY}).json()["results"][0]["address_components"][0]
+    response = requests.get("https://maps.googleapis.com/maps/api/geocode/json", params = {"latlng": f"{latitude},{longitude}", "result_type": "locality", "key": GOOGLE_API_KEY}).json()["results"][0]["address_components"]
 
     for x in response:
         if "locality" in x["types"]:
