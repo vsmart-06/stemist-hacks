@@ -51,7 +51,6 @@ cd api
     - Windows:
 
     ```console
-    pip install venv
     python3 -m venv .venv
     .venv\Scripts\activate
     ```
@@ -69,9 +68,8 @@ pip install -r requirements.txt
 flask run
 ```
 
-- Start the Flutter app with the following command:
+- Open a new terminal in the same project directory, and start the Flutter app with the following commands:
 ```console
-cd ..
 cd src
 flutter run --dart-define GOOGLE_API_KEY=<your google api key>
 ```
