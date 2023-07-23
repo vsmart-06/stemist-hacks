@@ -59,7 +59,6 @@ cd api
     - MacOS/Linux:
 
     ```console
-    pip install venv
     python3 -m venv .venv
     . .venv/bin/activate
     ```
