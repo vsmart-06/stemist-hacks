@@ -2,3 +2,4 @@ Flask
 requests
 gunicorn
 openai
+urllib3==1.26.6
