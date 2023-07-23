@@ -2,19 +2,19 @@
 
 ### This is our submission for STEMist Hacks 2.0
 
-#### Team members:
+### Team members:
 
 - [Nalin Mathur](https://github.com/DrSnek)
 - [Srivishnu Vusirikala](https://github.com/vsmart-06)
 - [Vishaal Iyer](https://github.com/EmperorMonke)
 
-#### Technologies:
+### Technologies:
 
 - Flutter
 - Python
 - MongoDB
 
-#### Idea:
+### Idea:
 
 - [x] The app takes the IP address of the user and finds the nearest landmarks
 
@@ -32,7 +32,7 @@
 
 - [x] When you are in a place, it allows users to create their own checklist with different places to visit and check them off when visited
 
-#### Installation:
+### Installation:
 
 - Create a `.env` file in the project's root directory, and in the file, add the following credentials:
 ```console
@@ -46,7 +46,7 @@ MONGO_LINK = "<the connection string to your mongodb cluster>"
 cd api
 ```
 
-- **Optional**: If you would like to use a python virtual environment for the next step, run the following commands:
+- **Optional:** If you would like to use a Python virtual environment for the next step, run the following commands:
 
     - Windows:
 
@@ -64,13 +64,13 @@ cd api
     . .venv/bin/activate
     ```
 
-- Run the following commands to start the api:
+- Run the following commands to start the API:
 ```console
 pip install -r requirements.txt
 flask run
 ```
 
-- Start the flutter app with the following command:
+- Start the Flutter app with the following command:
 ```console
 cd ..
 cd src
