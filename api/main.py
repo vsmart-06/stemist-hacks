@@ -2,10 +2,58 @@ from flask import Flask, request
 import requests
 import os
 import openai
+import dotenv
+import pymongo
+import certifi
+
+dotenv.load_dotenv()
 
 app = Flask(__name__)
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
+MONGO_LINK = os.getenv("MONGO_LINK")
+
+class LandmarkChecklist:
+    def __init__(self, link: str):
+        self.link = link
+        self.client = pymongo.MongoClient(link, tlsCAFile = certifi.where())
+        self.db = self.client.get_database("stemist_hacks")
+        self.table = self.db.get_collection("landmark_checklist")
+    
+    def add_task(self, username: str, task: list):
+        try:
+            tasks: list = self.table.find_one({"user": username})["tasks"]
+            tasks.append(task)
+            self.table.update_one({"user": username}, {"$set": {"tasks": tasks}})
+        except:
+            tasks = [task]
+            self.table.insert_one({"user": username, "tasks": tasks})
+        
+        return True
+    
+    def update_task(self, username: str, task: list, pressed: bool):
+        tasks: list = self.table.find_one({"user": username})["tasks"]
+        index = tasks.index([task[0], not pressed])
+        tasks[index][1] = pressed
+        self.table.update_one({"user": username}, {"$set": {"tasks": tasks}})
+
+        return True
+
+    def get_tasks(self, username: str):
+        result = self.table.find_one({"user": username})
+        try:
+            result = result["tasks"]
+        except:
+            pass
+
+        return result
+    
+    def delete_task(self, username: str, task: list):
+        tasks: list = self.table.find_one({"user": username})["tasks"]
+        tasks = tasks.remove(task)
+        self.table.update_one({"user": username}, {"$set": {"tasks": tasks}})
+
+        return True
 
 @app.route("/")
 def index():
@@ -79,3 +127,57 @@ def city_details():
     decoded_response = gpt_response['choices'][0]['message']['content']
     
     return {"city": city, "details": decoded_response}
+
+@app.route("/add-task", methods = ["POST"])
+def add_task():
+    data = request.form
+
+    username = data.get("user")
+    task = eval(data.get("task"))
+
+    mongo = LandmarkChecklist(MONGO_LINK)
+
+    mongo.add_task(username, task)
+
+    return {"message": "Task added successfully"}
+
+@app.route("/update-task", methods = ["PATCH"])
+def update_task():
+    data = request.headers
+
+    username = data.get("user")
+    task = eval(data.get("task"))
+    pressed = eval(data.get("pressed"))
+
+    mongo = LandmarkChecklist(MONGO_LINK)
+
+    mongo.update_task(username, task, pressed)
+
+    return {"message": "Task updated successfully"}
+
+@app.route("/get-tasks", methods = ["GET"])
+def get_tasks():
+    data = request.headers
+
+    username = data.get("user")
+
+    mongo = LandmarkChecklist(MONGO_LINK)
+
+    tasks = mongo.get_tasks(username)
+
+    return {"tasks": tasks}
+
+@app.route("/delete-task", methods = ["DELETE"])
+def delete_task():
+    data = request.headers
+
+    username = data.get("user")
+    task = eval(data.get("task"))
+    print(task)
+    mongo = LandmarkChecklist(MONGO_LINK)
+
+    mongo.delete_task(username, task)
+
+    return {"message": "Task deleted successfully"}
+
+app.run(debug=True)

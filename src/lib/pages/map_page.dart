@@ -10,7 +10,7 @@ class MapPage extends StatefulWidget {
 
 class _MapPageState extends State<MapPage> {
   Completer<GoogleMapController> _controller = Completer();
-  LatLng? _center;
+  LatLng? center;
   Set<Marker> markers = {};
 
   void getPosition() async {
@@ -21,7 +21,7 @@ class _MapPageState extends State<MapPage> {
     Position posit = await Geolocator.getCurrentPosition(
         desiredAccuracy: LocationAccuracy.best);
     setState(() {
-      _center = LatLng(posit.latitude, posit.longitude);
+      center = LatLng(posit.latitude, posit.longitude);
     });
   }
 
@@ -57,8 +57,8 @@ class _MapPageState extends State<MapPage> {
         markers: markers,
         onMapCreated: _onMapCreated,
         initialCameraPosition: CameraPosition(
-          target: _center!,
-          zoom: 11.0,
+          target: center!,
+          zoom: 10.0,
         ),
         onTap: _handleTap,
       ),
@@ -66,7 +66,7 @@ class _MapPageState extends State<MapPage> {
       floatingActionButton: (markers.isNotEmpty)
           ? FloatingActionButton(
               onPressed: () {
-                Navigator.popAndPushNamed(context, "/",
+                Navigator.popAndPushNamed(context, "/tool",
                     arguments: {"position": markers.first.position});
               },
               child: Icon(Icons.check),

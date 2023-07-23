@@ -14,7 +14,7 @@
 
 - [x] Mark the most popular landmarks to give users an idea of where to visit
 
-- [ ] Tell what the city is famous for as well
+- [x] Tell what the city is famous for as well
 
 - [x] Use ChatGPT to generate a bunch of details about the location and use a ~~voice converter to return the output~~
 
@@ -22,14 +22,14 @@
 
 - [x] Merge maps choosing along with location input
 
-- [ ] When you are in a place, allow users to create their own checklist with different places to visit and check them off when required
+- [x] When you are in a place, allow users to create their own checklist with different places to visit and check them off when required
 
 #### To-Do:
-- [ ] Loading animation
+- [x] Loading animation
 
 - [ ] Distance from landmark
 
-- [ ] Add city details on the homepage
+- [x] Add city details on the homepage
 
 #### Technologies:
 - Flutter
