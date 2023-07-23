@@ -31,7 +31,7 @@ class _MapPageState extends State<MapPage> {
 
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) => getPosition());
+    getPosition();
   }
 
   _handleTap(LatLng tappedPoint) {
@@ -62,6 +62,16 @@ class _MapPageState extends State<MapPage> {
         ),
         onTap: _handleTap,
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.startFloat,
+      floatingActionButton: (markers.isNotEmpty)
+          ? FloatingActionButton(
+              onPressed: () {
+                Navigator.popAndPushNamed(context, "/",
+                    arguments: {"position": markers.first.position});
+              },
+              child: Icon(Icons.check),
+            )
+          : null,
     );
   }
 }

@@ -13,7 +13,8 @@ class Home extends StatefulWidget {
 }
 
 class _HomeState extends State<Home> {
-  Position? position;
+  var data;
+  dynamic position;
   List<Widget> landmarks = [];
   List<String> landmark_names = [];
   List<bool> pressed = [];
@@ -33,6 +34,7 @@ class _HomeState extends State<Home> {
       landmarks = [];
       landmark_names = [];
       pressed = [];
+      data = null;
     });
   }
 
@@ -116,6 +118,7 @@ class _HomeState extends State<Home> {
     setState(() {
       position = posit;
       generateLandmarks(null);
+      data = null;
     });
   }
 
@@ -241,16 +244,28 @@ class _HomeState extends State<Home> {
         child: card,
       ));
     }
-
     setState(() {
       landmarks = temp_landmarks;
       pressed = temp_pressed;
       landmark_names = temp_string_landmarks;
     });
   }
+  
+  @override
+    void didChangeDependencies() {
+      // TODO: implement didChangeDependencies
+      super.didChangeDependencies();
+      data = ModalRoute.of(context)!.settings.arguments as Map?;
+    }
 
   @override
   Widget build(BuildContext context) {
+    if (data != null) {
+      setState(() {
+              position = data["position"];
+              generateLandmarks(null);
+            });
+    }
     width = MediaQuery.of(context).size.width;
     height = MediaQuery.of(context).size.height;
     return Scaffold(
@@ -267,6 +282,15 @@ class _HomeState extends State<Home> {
                 Padding(
                   padding: const EdgeInsets.all(10.0),
                   child: Row(children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(0, 0, 10, 0),
+                      child: IconButton(
+                        icon: Icon(Icons.map),
+                        onPressed: () {
+                          Navigator.pushNamed(context, "/map");
+                        },
+                      ),
+                    ),
                     Expanded(
                       child: TextField(
                         decoration: InputDecoration(

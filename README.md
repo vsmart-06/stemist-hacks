@@ -20,13 +20,16 @@
 
 - [x] Provide an option to allow users to explore other places even if they are not at the location
 
-- [ ] Merge maps choosing along with location input
+- [x] Merge maps choosing along with location input
 
 - [ ] When you are in a place, allow users to create their own checklist with different places to visit and check them off when required
 
 #### To-Do:
 - [ ] Loading animation
+
 - [ ] Distance from landmark
+
+- [ ] Add city details on the homepage
 
 #### Technologies:
 - Flutter

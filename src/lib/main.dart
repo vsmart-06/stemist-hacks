@@ -6,7 +6,8 @@ void main() {
   runApp(
     MaterialApp(
       routes: {
-        "/": (context) => Home(), "/E": (context) => MapPage()} 
+        "/": (context) => Home(), 
+        "/map": (context) => MapPage()} 
     )
   );
 }
