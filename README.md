@@ -63,10 +63,20 @@ cd api
     ```
 
 - Run the following commands to start the API:
-```console
-pip install -r requirements.txt
-flask run
-```
+
+    - Windows:
+
+    ```console
+    pip install -r requirements.txt
+    flask run
+    ```
+
+    - MacOS/Linux:
+
+    ```console
+    pip3 install -r requirements.txt
+    flask run
+    ```
 
 - Open a new terminal in the same project directory, and start the Flutter app with the following commands:
 ```console
